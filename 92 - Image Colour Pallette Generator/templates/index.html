@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>Image Colour Pallette Generator</title>
+    <meta content="" name="description">
+    <meta content="" name="keywords">
+
+    <!-- Favicons -->
+    <link href="/static/img/favicon.png" rel="icon">
+    <link href="/static/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link
+        href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+        rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="/static/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+    <link href="/static/vendor/quill/quill.snow.css" rel="stylesheet">
+    <link href="/static/vendor/quill/quill.bubble.css" rel="stylesheet">
+    <link href="/static/vendor/remixicon/remixicon.css" rel="stylesheet">
+    <link href="/static/vendor/simple-datatables/style.css" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link href="/static/css/style.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <header id="header" class="header fixed-top d-flex align-items-center">
+        <div class="d-flex align-items-center justify-content-between">
+            <a href="/" class="logo d-flex align-items-center">
+                <img src="/static/img/logo.png" alt="">
+                <span class="d-none d-lg-block">COLOUR PALLETE</span>
+            </a>
+        </div>
+    </header>
+
+    <main id="main" class="main">
+
+        <div class="pagetitle">
+            <h1>DEMO</h1>
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                    <li class="breadcrumb-item">Forms</li>
+                </ol>
+            </nav>
+        </div>
+
+        <section class="section">
+            <div class="row">
+                <div class="col-lg-7">
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">DEMO</h5>
+                            <form method="post" enctype="multipart/form-data" id="image-form" onsubmit="event.preventDefault(); processForm();" action="/">
+                                <div id="carouselExampleSlidesOnly" class="row mb-3" data-bs-ride="carousel">
+                                    <div class="carousel-inner">
+                                        <div class="carousel-item active">
+                                            <!-- Imagen seleccionada antes de hacer clic en el botón "Run" -->
+                                            <label for="formFile" class="form-label">Selected Image</label>
+                                            <!-- Contenedor de vista previa con el estilo CSS aplicado -->
+                                            <div id="image-preview">
+                                                <img id="preview-image" class="d-block w-100" alt="Image 1">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card row mb-3">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Table</h5>
+                                        <!-- Tabla para mostrar los colores -->
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">Color</th>
+                                                    <th scope="col">Color Code</th>
+                                                    <th scope="col">Percentage</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="color-table-body">
+                                                {% for color_info in result %}
+                                                <tr>
+                                                    <td style="background-color:{{ color_info['Color Code'] }}">&nbsp;</td>
+                                                    <td>{{ color_info['Color Code'] }}</td>
+                                                    <td>{{ color_info['Percentage'] }}%</td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                        
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <label for="inputNumber" class="col-sm-2 col-form-label">File Upload</label>
+                                    <div class="col-sm-10">
+                                        <!-- Input de tipo "file" con el atributo "form" y "accept" -->
+                                        <input class="form-control" type="file" name="imageFile" id="formFile"
+                                            form="image-form" accept="image/*" onchange="previewImage(event)">
+                                    </div>
+                                </div>
+                                <div>
+                                    <div id="loading-message" style="display: none;">
+                                        Processing image... Please wait.
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label">Get color</label>
+                                    <div class="col-sm-10">
+                                    <!-- Botón "Run" con ID "run-button" -->
+                                        <button type="submit" class="btn btn-primary" id="run-button" onclick="processForm()">Run</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="footer" class="footer">
+        <div class="copyright">
+            &copy; Copyright <strong><span>bfortuna.dev</span></strong>. All Rights Reserved
+        </div>
+        <div class="credits">
+            Designed by Brian Fortuna</a>
+        </div>
+    </footer><!-- End Footer -->
+
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+            class="bi bi-arrow-up-short"></i></a>
+
+    <!-- Vendor JS Files -->
+    <script src="/static/vendor/apexcharts/apexcharts.min.js"></script>
+    <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/vendor/chart.js/chart.umd.js"></script>
+    <script src="/static/vendor/echarts/echarts.min.js"></script>
+    <script src="/static/vendor/quill/quill.min.js"></script>
+    <script src="/static/vendor/simple-datatables/simple-datatables.js"></script>
+    <script src="/static/vendor/tinymce/tinymce.min.js"></script>
+    <script src="/static/vendor/php-email-form/validate.js"></script>
+
+    <!-- Template Main JS File -->
+    <script src="/static/js/main.js"></script>
+    <script>
+        // Función para previsualizar la imagen seleccionada
+        function previewImage(event) {
+            const fileInput = event.target;
+            const file = fileInput.files[0];
+            const previewImageElement = document.getElementById("preview-image");
+    
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    previewImageElement.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                previewImageElement.src = ""; // Limpiamos la imagen previa si no hay imagen seleccionada
+            }
+        }
+    
+        // Función para procesar el formulario y mostrar los colores generados
+        function processForm() {
+            const form = document.getElementById("image-form");
+            const formData = new FormData(form);
+    
+            // Obtener el botón "Run"
+            const runButton = document.getElementById("run-button");
+    
+            // Deshabilitar el botón durante el proceso de carga
+            runButton.disabled = true;
+    
+            // Mostrar el indicador de carga y cambiar el color del botón
+            runButton.innerText = "Processing...";
+            runButton.style.backgroundColor = "#ccc";
+    
+            fetch("/", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Procesar la respuesta del servidor y actualizar la tabla de colores
+                const colorInfoList = data.result;
+                const tableBody = document.getElementById("color-table-body");
+                tableBody.innerHTML = "";
+    
+                colorInfoList.forEach(colorInfo => {
+                    // Crear las filas de la tabla con la información de los colores
+                    const colorCode = colorInfo["Color Code"];
+                    const percentage = colorInfo["Percentage"];
+                    const colorDiv = `<div style="background-color:${colorCode}">&nbsp;</div>`;
+                    const tableRow = `<tr><td>${colorDiv}</td><td>${colorCode}</td><td>${percentage}%</td></tr>`;
+                    tableBody.innerHTML += tableRow;
+                });
+    
+                // También actualizamos la vista previa de la imagen seleccionada
+                const previewImageElement = document.getElementById("preview-image");
+                previewImageElement.src = data.image_url;
+    
+                // Restaurar el texto y el color original del botón después de completar el proceso
+                runButton.innerText = "Run";
+                runButton.style.backgroundColor = "#007bff";
+    
+                // Habilitar nuevamente el botón después de completar el proceso
+                runButton.disabled = false;
+            })
+            .catch(error => {
+                console.error("Error al procesar el formulario:", error);
+    
+                // Restaurar el texto y el color original del botón en caso de error
+                runButton.innerText = "Run";
+                runButton.style.backgroundColor = "#007bff";
+    
+                // Habilitar nuevamente el botón después de completar el proceso (incluso si hay error)
+                runButton.disabled = false;
+            });
+        }
+    </script>
+    
+</body>
+</html>
